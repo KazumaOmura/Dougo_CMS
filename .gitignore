@@ -5,6 +5,8 @@
 !/app/Http/Controllers/Default/*
 !/app/Http/Controllers/Generated
 
+/app/Http/Controllers/Generated/*
+
 /resources/views/*
 !/resources/views/components/
 !/resources/views/admin/
@@ -21,3 +23,8 @@
 
 /app/ORM/Generated/Repository/*
 !/app/ORM/Generated/Repository/.gitkeep
+
+/routes/*
+!/routes/api.php
+!/routes/channels.php
+!/routes/console.php

@@ -11,6 +11,10 @@ Breadcrumbs::for('admin_users.list', function ($trail) {
 });
 Breadcrumbs::for('admin_users.form', function ($trail) {
     $trail->parent('admin_users.list');
+    $trail->push('admin_users編集', url('/'));
+});
+Breadcrumbs::for('admin_users.detail', function ($trail) {
+    $trail->parent('admin_users.list');
     $trail->push('admin_users詳細', url('/'));
 });
 
@@ -20,6 +24,10 @@ Breadcrumbs::for('profile.list', function ($trail) {
 });
 Breadcrumbs::for('profile.form', function ($trail) {
     $trail->parent('profile.list');
+    $trail->push('profile編集', url('/'));
+});
+Breadcrumbs::for('profile.detail', function ($trail) {
+    $trail->parent('profile.list');
     $trail->push('profile詳細', url('/'));
 });
 
@@ -28,6 +36,10 @@ Breadcrumbs::for('users.list', function ($trail) {
     $trail->push('users一覧', url('/users'));
 });
 Breadcrumbs::for('users.form', function ($trail) {
+    $trail->parent('users.list');
+    $trail->push('users編集', url('/'));
+});
+Breadcrumbs::for('users.detail', function ($trail) {
     $trail->parent('users.list');
     $trail->push('users詳細', url('/'));
 });

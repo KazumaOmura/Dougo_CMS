@@ -295,8 +295,10 @@ EOF;
 
 use App\Http\Controllers\Generated\\${tableNameCamel}\\${tableNameCamel}ListController;
 use App\Http\Controllers\Generated\\${tableNameCamel}\\${tableNameCamel}FormController;
+use App\Http\Controllers\Generated\\${tableNameCamel}\\${tableNameCamel}DetailController;
 Route::get('/${tableName}', [${tableNameCamel}ListController::class, 'index'])->middleware('admin_login');
-Route::get('/${tableName}/{id}', [${tableNameCamel}FormController::class, 'index'])->middleware('admin_login');
+Route::get('/${tableName}/edit/{id}', [${tableNameCamel}FormController::class, 'index'])->middleware('admin_login');
+Route::get('/${tableName}/detail/{id}', [${tableNameCamel}DetailController::class, 'index'])->middleware('admin_login');
 
 EOF;
 
@@ -407,12 +409,18 @@ class ${tableNameCamel}ListController extends Controller
         \$index = 'ID,名前';
         //  Repositoryの名前をここで宣言する
         \$repository_name = '${tableNameCamel}';
+        //  編集ボタンの有無(int)
+        \$edit_flag = 1;
+        //  詳細ボタンの有無(int)
+        \$detail_flag = 1;
 
         return view('${tableName}.${tableName}_list', compact(
             'title',
             'column',
             'repository_name',
-            'index'
+            'index',
+            'edit_flag',
+            'detail_flag'
         ));
     }
 }
@@ -451,6 +459,14 @@ EOF;
                 echo "【ファイル再生成】";
                 echo $fname . "\n";
             }
+
+
+
+
+
+
+
+
 
 
             // FormController作成
@@ -508,6 +524,85 @@ EOF;
             }
 
 
+
+
+
+
+
+
+
+
+            // DetailController作成
+            $detail_controller_value = <<< EOF
+<?php
+
+namespace App\Http\Controllers\Generated\\${tableNameCamel};
+
+use App\Http\Controllers\Default\Controller;
+
+class ${tableNameCamel}DetailController extends Controller
+{
+    public function index(int \$id)
+    {
+        //  ページのタイトルを定義する
+        \$title = '${tableName}詳細';
+
+        return view('${tableName}.${tableName}_detail', compact(
+            'id',
+            'title',
+        ));
+    }
+}
+
+EOF;
+
+            $fpath = './app/Http/Controllers/Generated/'.$tableNameCamel;
+            $fname = $fpath . "/".$tableNameCamel."DetailController.php";
+            
+            // ディレクトリがない場合
+            $blade_dir_name = $fpath;
+            if (!file_exists($blade_dir_name)) {
+                mkdir($blade_dir_name); // ディレクトリ作成
+                echo "【ディレクトリ作成】";
+                echo $blade_dir_name . "\n";
+            }
+
+            echo '-------------';
+            echo "\n\n";
+            echo $fname;
+            echo "\n\n";
+            echo '-------------';
+            // ファイルがない場合
+            if (!file_exists($fname)) {
+                $fhandle = fopen($fname, "w"); //ファイルを書き込みモードで開く。
+                fwrite($fhandle, $detail_controller_value); //ファイルをバイナリモードで書き込む。第二引数に書き込みたい文字列
+                fclose($fhandle); //ファイルポインタを閉じる
+                echo "【ファイル作成】";
+                echo $fname . "\n";
+            }
+            // 再生成する場合
+            else if($new_controller_flag){
+                $fhandle = fopen($fname, "w"); //ファイルを書き込みモードで開く。
+                fwrite($fhandle, $detail_controller_value); //ファイルをバイナリモードで書き込む。第二引数に書き込みたい文字列
+                fclose($fhandle); //ファイルポインタを閉じる
+                echo "【ファイル再生成】";
+                echo $fname . "\n";
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             // list blade作成
             $blade_list_value = <<< EOF
 <!DOCTYPE html>
@@ -527,7 +622,7 @@ EOF;
 @include('layouts.header')
 {{ Breadcrumbs::render('${tableName}.list') }}
 <main class="container-xxl">
-    <x-table column="{{ \$column }}" reponame="{{ \$repository_name }}" title="{{ \$title }}" index="{{ \$index }}"/>
+    <x-table column="{{ \$column }}" reponame="{{ \$repository_name }}" title="{{ \$title }}" index="{{ \$index }}" editflag="{{ \$edit_flag }}" detailflag="{{ \$detail_flag }}"/>
 </main>
 
 </body>
@@ -560,6 +655,13 @@ EOF;
                 echo "【ファイル再生成】";
                 echo $fname . "\n";
             }
+
+
+
+
+
+
+
 
 
             // form blade作成
@@ -622,6 +724,65 @@ EOF;
 
 
 
+
+            // detail blade作成
+            $blade_detail_value = <<< EOF
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" media="all" href="{{ asset('css/bootstrap.css') }}">
+
+    <title>{{ \$title }}</title>
+</head>
+
+<body>
+@include('layouts.header')
+{{ Breadcrumbs::render('${tableName}.detail') }}
+
+</body>
+<script src="{{ asset('js/bootstrap.js') }}"></script>
+</html>
+EOF;
+
+            $fpath = './resources/views/';
+            $blade_dir_name = $fpath . $tableName;
+            $fname = $blade_dir_name . "/" . $tableName . "_detail.blade.php";
+            if (!file_exists($blade_dir_name)) {
+                mkdir($blade_dir_name); // ディレクトリ作成
+                echo "【ディレクトリ作成】";
+                echo $blade_dir_name . "\n";
+            }
+
+            // blade ファイルがない場合
+            if (!file_exists($fname)) {
+                $fhandle = fopen($fname, "w"); //ファイルを書き込みモードで開く。
+                fwrite($fhandle, $blade_detail_value); //ファイルをバイナリモードで書き込む。第二引数に書き込みたい文字列
+                fclose($fhandle); //ファイルポインタを閉じる
+                echo "【ファイル作成】";
+                echo $fname . "\n";
+            }
+            // 再生成する場合
+            else if($new_blade_flag){
+                $fhandle = fopen($fname, "w"); //ファイルを書き込みモードで開く。
+                fwrite($fhandle, $blade_detail_value); //ファイルをバイナリモードで書き込む。第二引数に書き込みたい文字列
+                fclose($fhandle); //ファイルポインタを閉じる
+                echo "【ファイル再生成】";
+                echo $fname . "\n";
+            }
+
+
+
+
+
+
+
+
+
             // index追記
             $breadcrumbs_value = <<< EOF
 
@@ -658,6 +819,10 @@ Breadcrumbs::for('${tableName}.list', function (\$trail) {
     \$trail->push('${tableName}一覧', url('/${tableName}'));
 });
 Breadcrumbs::for('${tableName}.form', function (\$trail) {
+    \$trail->parent('${tableName}.list');
+    \$trail->push('${tableName}編集', url('/'));
+});
+Breadcrumbs::for('${tableName}.detail', function (\$trail) {
     \$trail->parent('${tableName}.list');
     \$trail->push('${tableName}詳細', url('/'));
 });
