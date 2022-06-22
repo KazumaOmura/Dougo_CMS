@@ -14,6 +14,7 @@
 
 /app/Models/*
 !/app/Models/.gitkeep
+!/app/Models/User.php
 
 /app/ORM/Generated/Repository/*
 !/app/ORM/Generated/Repository/.gitkeep
