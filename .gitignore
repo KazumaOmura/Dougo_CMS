@@ -7,6 +7,11 @@
 /resources/views/*
 !/resources/views/components/
 
+/routes/*
+!/routes/api.php
+!/routes/channels.php
+!/routes/console.php
+
 /app/Models/*
 !/app/Models/.gitkeep
 
