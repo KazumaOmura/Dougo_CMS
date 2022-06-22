@@ -13,16 +13,45 @@ use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 
 class MakeORM extends Command
 {
-    protected $signature = 'make:orm';
+    protected $signature = 'make:orm {--name=} {--how=} {--blade} {--controller}';
     protected $description = 'Reoisitory,Modelの作成';
 
     public function handle()
     {
+        $new_blade_flag=false;
+        $new_controller_flag=false;
 
+        if ($this->input->hasParameterOption('--how')) {
+            $this->line('');
+            $this->line('Sample:');
+            $this->line('   php artisan make:orm --name [<AppName>]');
+            $this->line('');
+            $this->line('Options:');
+            $this->line('   --name [<AppName>]              アプリ名を指定します');
+            $this->line('   --controller                    controllerを再生成します');
+            $this->line('   --blade                         bladeを再生成します');
+            $this->line('');
+            exit;
+        }
 
+        if (!$this->input->hasParameterOption('--name')) {
+            $this->line('--nameオプションは与えられていません');
+            exit;
+        }
+        if($this->option('name') == NULL){
+            $this->line('--nameオプションの中身がありません');
+            exit;
+        }
 
+        if ($this->input->hasParameterOption('--blade')) {
+            $new_blade_flag=true;
+        }
 
-
+        if ($this->input->hasParameterOption('--controller')) {
+            $new_controller_flag=true;
+        }
+            
+        $app_name = $this->option('name');
 
 
         // ヘッダー作成
@@ -30,7 +59,7 @@ class MakeORM extends Command
 <header>
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">DougoCMS</a>
+            <a class="navbar-brand" href="/">{$app_name} CMS</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -101,7 +130,7 @@ EOF;
 
     <link rel="stylesheet" media="all" href="{{ asset('css/bootstrap.css') }}">
 
-    <title>Dougo CMS</title>
+    <title>{$app_name} CMS</title>
 </head>
 
 <body>
@@ -339,10 +368,22 @@ EOF;
 
             $fpath = './app/Http/Controllers/';
             $fname = $fpath . $tableNameCamel . "ListController.php";
+
+            // ファイルがない場合
             if (!file_exists($fname)) {
                 $fhandle = fopen($fname, "w"); //ファイルを書き込みモードで開く。
                 fwrite($fhandle, $list_controller_value); //ファイルをバイナリモードで書き込む。第二引数に書き込みたい文字列
                 fclose($fhandle); //ファイルポインタを閉じる
+                echo "【ファイル作成】";
+                echo $fname . "\n";
+            }
+            // 再生成する場合
+            else if($new_controller_flag){
+                $fhandle = fopen($fname, "w"); //ファイルを書き込みモードで開く。
+                fwrite($fhandle, $list_controller_value); //ファイルをバイナリモードで書き込む。第二引数に書き込みたい文字列
+                fclose($fhandle); //ファイルポインタを閉じる
+                echo "【ファイル再生成】";
+                echo $fname . "\n";
             }
 
 
@@ -375,10 +416,19 @@ EOF;
 
             $fpath = './app/Http/Controllers/';
             $fname = $fpath . $tableNameCamel . "FormController.php";
+            // ファイルがない場合
             if (!file_exists($fname)) {
                 $fhandle = fopen($fname, "w"); //ファイルを書き込みモードで開く。
                 fwrite($fhandle, $form_controller_value); //ファイルをバイナリモードで書き込む。第二引数に書き込みたい文字列
                 fclose($fhandle); //ファイルポインタを閉じる
+            }
+            // 再生成する場合
+            else if($new_controller_flag){
+                $fhandle = fopen($fname, "w"); //ファイルを書き込みモードで開く。
+                fwrite($fhandle, $form_controller_value); //ファイルをバイナリモードで書き込む。第二引数に書き込みたい文字列
+                fclose($fhandle); //ファイルポインタを閉じる
+                echo "【ファイル再生成】";
+                echo $fname . "\n";
             }
 
 
@@ -418,11 +468,20 @@ EOF;
                 echo $blade_dir_name . "\n";
             }
 
+            // blade ファイルがない場合
             if (!file_exists($fname)) {
                 $fhandle = fopen($fname, "w"); //ファイルを書き込みモードで開く。
                 fwrite($fhandle, $blade_list_value); //ファイルをバイナリモードで書き込む。第二引数に書き込みたい文字列
                 fclose($fhandle); //ファイルポインタを閉じる
                 echo "【ファイル作成】";
+                echo $fname . "\n";
+            }
+            // 再生成する場合
+            else if($new_blade_flag){
+                $fhandle = fopen($fname, "w"); //ファイルを書き込みモードで開く。
+                fwrite($fhandle, $blade_list_value); //ファイルをバイナリモードで書き込む。第二引数に書き込みたい文字列
+                fclose($fhandle); //ファイルポインタを閉じる
+                echo "【ファイル再生成】";
                 echo $fname . "\n";
             }
 
@@ -472,7 +531,14 @@ EOF;
                 echo "【ファイル作成】";
                 echo $fname . "\n";
             }
-
+            // 再生成する場合
+            else if($new_blade_flag){
+                $fhandle = fopen($fname, "w"); //ファイルを書き込みモードで開く。
+                fwrite($fhandle, $blade_list_value); //ファイルをバイナリモードで書き込む。第二引数に書き込みたい文字列
+                fclose($fhandle); //ファイルポインタを閉じる
+                echo "【ファイル再生成】";
+                echo $fname . "\n";
+            }
 
 
 
