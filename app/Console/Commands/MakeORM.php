@@ -54,6 +54,43 @@ class MakeORM extends Command
         $app_name = $this->option('name');
 
 
+
+        // login ヘッダー作成
+        $login_header_value = <<< EOF
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">{$app_name} CMS</a>
+        </div>
+    </nav>
+</header>
+EOF;
+
+        $fpath = './resources/views/';
+        $blade_dir_name = $fpath . "layouts";
+        $fname = $blade_dir_name . "/login_header.blade.php";
+        if(!file_exists($blade_dir_name)){
+            mkdir($blade_dir_name); // ディレクトリ作成
+            echo "【ディレクトリ作成】";
+            echo $blade_dir_name . "\n";
+        }
+            // ファイルを開く（'a'は追記モード）
+            $fp = fopen($fname, "w");
+            // ファイルに書き込む
+            fputs($fp, $login_header_value);
+            // ファイルを閉じる
+            fclose($fp);
+            echo "【ログインヘッダー作成】";
+            echo $fname."\n";
+
+
+
+
+
+
+
+
+
         // ヘッダー作成
         $header_value = <<< EOF
 <header>
@@ -135,6 +172,9 @@ EOF;
 
 <body>
 @include('layouts.header')
+@if(session('message'))
+    <div class="alert alert-{{session('type')}}">{{session('message')}}</div>
+@endif
 <main class="container-xxl">
     <h3>Menu</h3>
     <ul class="list-group list-group-flush" style="max-width: 400px;">
@@ -158,18 +198,29 @@ EOF;
 
 
 
+
         // web.php作成
         $route_value = <<< EOF
 
 <?php
 
 use Illuminate\Support\Facades\Route;
+Route::get('/login', function () {
+    return view('admin.login');
+})->middleware('already_admin_login');
+
+use App\Http\Controllers\AdminLoginController;
+Route::post('/login', [AdminLoginController::class, 'login']);
+
+use App\Http\Controllers\LogoutController;
+Route::get('/logout', [LogoutController::class, 'logout'])->middleware('admin_login');
+
 Route::get('/', function () {
     return view('index');
-});
+})->middleware('admin_login');
 
 use App\Http\Controllers\UpdateController;
-Route::post('{any}/update', [UpdateController::class, 'save']);
+Route::post('{any}/update', [UpdateController::class, 'save'])->middleware('admin_login');
 
 EOF;
 
@@ -244,8 +295,8 @@ EOF;
 
 use App\Http\Controllers\\${tableNameCamel}ListController;
 use App\Http\Controllers\\${tableNameCamel}FormController;
-Route::get('/${tableName}', [${tableNameCamel}ListController::class, 'index']);
-Route::get('/${tableName}/{id}', [${tableNameCamel}FormController::class, 'index']);
+Route::get('/${tableName}', [${tableNameCamel}ListController::class, 'index'])->middleware('admin_login');
+Route::get('/${tableName}/{id}', [${tableNameCamel}FormController::class, 'index'])->middleware('admin_login');
 
 EOF;
 
@@ -618,7 +669,9 @@ EOF;
 
             // ヘッダー完成
             $header_value = <<< EOF
-
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/logout">ログアウト</a>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Dropdown link
