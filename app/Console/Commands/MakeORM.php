@@ -476,11 +476,21 @@ EOF;
 namespace App\Http\Controllers\Generated\\${tableNameCamel};
 
 use App\Http\Controllers\Default\Controller;
+use App\Models\\${tableNameCamel};
+use Illuminate\Http\Request;
 
 class ${tableNameCamel}FormController extends Controller
 {
-    public function index(int \$id)
+    public function index(Request \$request, int \$id)
     {
+        // 存在しないidの時
+        \$existsOrNot = \DB::table('${tableName}')->where('id', \$id)->exists();
+        if (!\$existsOrNot) {
+            \$request->session()->flash('message', '存在しません');
+            \$request->session()->flash('type', 'danger');
+            return redirect('/${tableName}');
+        }
+
         //  ページのタイトルを定義する
         \$title = '${tableName}編集';
         //  表のカラム名を文字列で定義する
@@ -539,11 +549,21 @@ EOF;
 namespace App\Http\Controllers\Generated\\${tableNameCamel};
 
 use App\Http\Controllers\Default\Controller;
+use App\Models\\${tableNameCamel};
+use Illuminate\Http\Request;
 
 class ${tableNameCamel}DetailController extends Controller
 {
-    public function index(int \$id)
+    public function index(Request \$request, int \$id)
     {
+        // 存在しないidの時
+        \$existsOrNot = \DB::table('${tableName}')->where('id', \$id)->exists();
+        if (!\$existsOrNot) {
+            \$request->session()->flash('message', '存在しません');
+            \$request->session()->flash('type', 'danger');
+            return redirect('/${tableName}');
+        }
+        
         //  ページのタイトルを定義する
         \$title = '${tableName}詳細';
 
@@ -620,6 +640,9 @@ EOF;
 
 <body>
 @include('layouts.header')
+@if(session('message'))
+    <div class="alert alert-{{session('type')}}">{{session('message')}}</div>
+@endif
 {{ Breadcrumbs::render('${tableName}.list') }}
 <main class="container-xxl">
     <x-table column="{{ \$column }}" reponame="{{ \$repository_name }}" title="{{ \$title }}" index="{{ \$index }}" editflag="{{ \$edit_flag }}" detailflag="{{ \$detail_flag }}"/>
