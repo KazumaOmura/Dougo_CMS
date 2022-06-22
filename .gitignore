@@ -1,0 +1,14 @@
+.env
+
+/app/Http/Controllers/*
+!/app/Http/Controllers/Controller.php
+!/app/Http/Controllers/UpdateController.php
+
+/resources/views/*
+!/resources/views/components/
+
+/app/Models/*
+!/app/Models/.gitkeep
+
+/app/ORM/Generated/Repository/*
+!/app/ORM/Generated/Repository/.gitkeep
