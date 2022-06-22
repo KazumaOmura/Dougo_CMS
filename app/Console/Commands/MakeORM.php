@@ -209,17 +209,17 @@ Route::get('/login', function () {
     return view('admin.login');
 })->middleware('already_admin_login');
 
-use App\Http\Controllers\AdminLoginController;
+use App\Http\Controllers\Default\AdminLoginController;
 Route::post('/login', [AdminLoginController::class, 'login']);
 
-use App\Http\Controllers\LogoutController;
+use App\Http\Controllers\Default\LogoutController;
 Route::get('/logout', [LogoutController::class, 'logout'])->middleware('admin_login');
 
 Route::get('/', function () {
     return view('index');
 })->middleware('admin_login');
 
-use App\Http\Controllers\UpdateController;
+use App\Http\Controllers\Default\UpdateController;
 Route::post('{any}/update', [UpdateController::class, 'save'])->middleware('admin_login');
 
 EOF;
@@ -293,8 +293,8 @@ EOF;
             // web.php追記
             $route_value = <<< EOF
 
-use App\Http\Controllers\\${tableNameCamel}\\${tableNameCamel}ListController;
-use App\Http\Controllers\\${tableNameCamel}\\${tableNameCamel}FormController;
+use App\Http\Controllers\Generated\\${tableNameCamel}\\${tableNameCamel}ListController;
+use App\Http\Controllers\Generated\\${tableNameCamel}\\${tableNameCamel}FormController;
 Route::get('/${tableName}', [${tableNameCamel}ListController::class, 'index'])->middleware('admin_login');
 Route::get('/${tableName}/{id}', [${tableNameCamel}FormController::class, 'index'])->middleware('admin_login');
 
@@ -391,9 +391,9 @@ EOF;
             $list_controller_value = <<< EOF
 <?php
 
-namespace App\Http\Controllers\\${tableNameCamel};
+namespace App\Http\Controllers\Generated\\${tableNameCamel};
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Default\Controller;
 
 class ${tableNameCamel}ListController extends Controller
 {
@@ -419,7 +419,7 @@ class ${tableNameCamel}ListController extends Controller
 
 EOF;
 
-            $fpath = './app/Http/Controllers/'.$tableNameCamel;
+            $fpath = './app/Http/Controllers/Generated/'.$tableNameCamel;
             $fname = $fpath . "/".$tableNameCamel."ListController.php";
             
             // ディレクトリがない場合
@@ -457,9 +457,9 @@ EOF;
             $form_controller_value = <<< EOF
 <?php
 
-namespace App\Http\Controllers\\${tableNameCamel};
+namespace App\Http\Controllers\Generated\\${tableNameCamel};
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Default\Controller;
 
 class ${tableNameCamel}FormController extends Controller
 {
@@ -482,7 +482,7 @@ class ${tableNameCamel}FormController extends Controller
 }
 EOF;
 
-            $fpath = './app/Http/Controllers/'.$tableNameCamel;;
+            $fpath = './app/Http/Controllers/Generated/'.$tableNameCamel;;
             $fname = $fpath . "/".$tableNameCamel."FormController.php";
 
             // ディレクトリがない場合

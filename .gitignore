@@ -1,6 +1,9 @@
 .env
 
 /app/Http/Controllers/*
+!/app/Http/Controllers/Default/
+!/app/Http/Controllers/Default/*
+!/app/Http/Controllers/Generated
 !/app/Http/Controllers/Controller.php
 !/app/Http/Controllers/UpdateController.php
 !/app/Http/Controllers/AdminLoginController.php
