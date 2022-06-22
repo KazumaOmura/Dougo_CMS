@@ -293,8 +293,8 @@ EOF;
             // web.php追記
             $route_value = <<< EOF
 
-use App\Http\Controllers\\${tableNameCamel}ListController;
-use App\Http\Controllers\\${tableNameCamel}FormController;
+use App\Http\Controllers\\${tableNameCamel}\\${tableNameCamel}ListController;
+use App\Http\Controllers\\${tableNameCamel}\\${tableNameCamel}FormController;
 Route::get('/${tableName}', [${tableNameCamel}ListController::class, 'index'])->middleware('admin_login');
 Route::get('/${tableName}/{id}', [${tableNameCamel}FormController::class, 'index'])->middleware('admin_login');
 
@@ -391,7 +391,9 @@ EOF;
             $list_controller_value = <<< EOF
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\\${tableNameCamel};
+
+use App\Http\Controllers\Controller;
 
 class ${tableNameCamel}ListController extends Controller
 {
@@ -417,9 +419,22 @@ class ${tableNameCamel}ListController extends Controller
 
 EOF;
 
-            $fpath = './app/Http/Controllers/';
-            $fname = $fpath . $tableNameCamel . "ListController.php";
+            $fpath = './app/Http/Controllers/'.$tableNameCamel;
+            $fname = $fpath . "/".$tableNameCamel."ListController.php";
+            
+            // ディレクトリがない場合
+            $blade_dir_name = $fpath;
+            if (!file_exists($blade_dir_name)) {
+                mkdir($blade_dir_name); // ディレクトリ作成
+                echo "【ディレクトリ作成】";
+                echo $blade_dir_name . "\n";
+            }
 
+            echo '-------------';
+            echo "\n\n";
+            echo $fname;
+            echo "\n\n";
+            echo '-------------';
             // ファイルがない場合
             if (!file_exists($fname)) {
                 $fhandle = fopen($fname, "w"); //ファイルを書き込みモードで開く。
@@ -442,7 +457,9 @@ EOF;
             $form_controller_value = <<< EOF
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\\${tableNameCamel};
+
+use App\Http\Controllers\Controller;
 
 class ${tableNameCamel}FormController extends Controller
 {
@@ -465,8 +482,16 @@ class ${tableNameCamel}FormController extends Controller
 }
 EOF;
 
-            $fpath = './app/Http/Controllers/';
-            $fname = $fpath . $tableNameCamel . "FormController.php";
+            $fpath = './app/Http/Controllers/'.$tableNameCamel;;
+            $fname = $fpath . "/".$tableNameCamel."FormController.php";
+
+            // ディレクトリがない場合
+            $blade_dir_name = $fpath;
+            if (!file_exists($blade_dir_name)) {
+                mkdir($blade_dir_name); // ディレクトリ作成
+                echo "【ディレクトリ作成】";
+                echo $blade_dir_name . "\n";
+            }
             // ファイルがない場合
             if (!file_exists($fname)) {
                 $fhandle = fopen($fname, "w"); //ファイルを書き込みモードで開く。

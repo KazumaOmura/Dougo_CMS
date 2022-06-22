@@ -19,17 +19,17 @@ Route::get('/', function () {
 use App\Http\Controllers\UpdateController;
 Route::post('{any}/update', [UpdateController::class, 'save'])->middleware('admin_login');
 
-use App\Http\Controllers\AdminUsersListController;
-use App\Http\Controllers\AdminUsersFormController;
+use App\Http\Controllers\AdminUsers\AdminUsersListController;
+use App\Http\Controllers\AdminUsers\AdminUsersFormController;
 Route::get('/admin_users', [AdminUsersListController::class, 'index'])->middleware('admin_login');
 Route::get('/admin_users/{id}', [AdminUsersFormController::class, 'index'])->middleware('admin_login');
 
-use App\Http\Controllers\ProfileListController;
-use App\Http\Controllers\ProfileFormController;
+use App\Http\Controllers\Profile\ProfileListController;
+use App\Http\Controllers\Profile\ProfileFormController;
 Route::get('/profile', [ProfileListController::class, 'index'])->middleware('admin_login');
 Route::get('/profile/{id}', [ProfileFormController::class, 'index'])->middleware('admin_login');
 
-use App\Http\Controllers\UsersListController;
-use App\Http\Controllers\UsersFormController;
+use App\Http\Controllers\Users\UsersListController;
+use App\Http\Controllers\Users\UsersFormController;
 Route::get('/users', [UsersListController::class, 'index'])->middleware('admin_login');
 Route::get('/users/{id}', [UsersFormController::class, 'index'])->middleware('admin_login');
