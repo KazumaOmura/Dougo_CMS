@@ -25,17 +25,3 @@ use App\Http\Controllers\Generated\AdminUsers\AdminUsersDetailController;
 Route::get('/admin_users', [AdminUsersListController::class, 'index'])->middleware('admin_login');
 Route::get('/admin_users/edit/{id}', [AdminUsersFormController::class, 'index'])->middleware('admin_login');
 Route::get('/admin_users/detail/{id}', [AdminUsersDetailController::class, 'index'])->middleware('admin_login');
-
-use App\Http\Controllers\Generated\Profile\ProfileListController;
-use App\Http\Controllers\Generated\Profile\ProfileFormController;
-use App\Http\Controllers\Generated\Profile\ProfileDetailController;
-Route::get('/profile', [ProfileListController::class, 'index'])->middleware('admin_login');
-Route::get('/profile/edit/{id}', [ProfileFormController::class, 'index'])->middleware('admin_login');
-Route::get('/profile/detail/{id}', [ProfileDetailController::class, 'index'])->middleware('admin_login');
-
-use App\Http\Controllers\Generated\Users\UsersListController;
-use App\Http\Controllers\Generated\Users\UsersFormController;
-use App\Http\Controllers\Generated\Users\UsersDetailController;
-Route::get('/users', [UsersListController::class, 'index'])->middleware('admin_login');
-Route::get('/users/edit/{id}', [UsersFormController::class, 'index'])->middleware('admin_login');
-Route::get('/users/detail/{id}', [UsersDetailController::class, 'index'])->middleware('admin_login');

@@ -8,6 +8,11 @@
 /app/Http/Controllers/Generated/*
 
 /resources/views/*
+!/resources/views/
+!/resources/views/index.blade.php
+!/resources/views/layouts/
+!/resources/views/layouts/header.blade.php
+!/resources/views/layouts/login_header.blade.php
 !/resources/views/components/
 !/resources/views/admin/
 !/resources/views/admin/login.blade.php

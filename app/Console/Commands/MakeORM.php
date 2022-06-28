@@ -55,33 +55,7 @@ class MakeORM extends Command
 
 
 
-        // login ヘッダー作成
-        $login_header_value = <<< EOF
-<header>
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">{$app_name} CMS</a>
-        </div>
-    </nav>
-</header>
-EOF;
-
-        $fpath = './resources/views/';
-        $blade_dir_name = $fpath . "layouts";
-        $fname = $blade_dir_name . "/login_header.blade.php";
-        if(!file_exists($blade_dir_name)){
-            mkdir($blade_dir_name); // ディレクトリ作成
-            echo "【ディレクトリ作成】";
-            echo $blade_dir_name . "\n";
-        }
-            // ファイルを開く（'a'は追記モード）
-            $fp = fopen($fname, "w");
-            // ファイルに書き込む
-            fputs($fp, $login_header_value);
-            // ファイルを閉じる
-            fclose($fp);
-            echo "【ログインヘッダー作成】";
-            echo $fname."\n";
+        
 
 
 
@@ -90,37 +64,6 @@ EOF;
 
 
 
-
-        // ヘッダー作成
-        $header_value = <<< EOF
-<header>
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">{$app_name} CMS</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                <ul class="navbar-nav">
-
-EOF;
-
-        $fpath = './resources/views/';
-        $blade_dir_name = $fpath . "layouts";
-        $fname = $blade_dir_name . "/header.blade.php";
-        if(!file_exists($blade_dir_name)){
-            mkdir($blade_dir_name); // ディレクトリ作成
-            echo "【ディレクトリ作成】";
-            echo $blade_dir_name . "\n";
-        }
-            // ファイルを開く（'a'は追記モード）
-            $fp = fopen($fname, "w");
-            // ファイルに書き込む
-            fputs($fp, $header_value);
-            // ファイルを閉じる
-            fclose($fp);
-            echo "【ヘッダー作成】";
-            echo $fname."\n";
 
 
 
@@ -155,50 +98,6 @@ EOF;
 
 
 
-        // index作成
-        $breadcrumbs_value = <<< EOF
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link rel="stylesheet" media="all" href="{{ asset('css/bootstrap.css') }}">
-
-    <title>{$app_name} CMS</title>
-</head>
-
-<body>
-@include('layouts.header')
-@if(session('message'))
-    <div class="alert alert-{{session('type')}}">{{session('message')}}</div>
-@endif
-<main class="container-xxl">
-    <div class="d-flex flex-row">
-        <div>
-            <h3>サンプル</h3>
-            <ul class="list-group list-group-flush" style="max-width: 400px;">
-                <li class="list-group-item"><a href="#">サンプル</a></li>
-            </ul>
-        </div>
-    </div>
-    
-    <h3>Menu</h3>
-    <ul class="list-group list-group-flush" style="max-width: 400px;">
-
-EOF;
-
-        $filename = './resources/views/index.blade.php';
-        // ファイルを開く（'a'は追記モード）
-        $fp = fopen($filename, "w");
-        // ファイルに書き込む
-        fputs($fp, $breadcrumbs_value);
-        // ファイルを閉じる
-        fclose($fp);
-        echo "【index作成】";
-        echo $filename."\n";
 
 
 
@@ -208,43 +107,7 @@ EOF;
 
 
 
-        // web.php作成
-        $route_value = <<< EOF
-
-<?php
-
-use Illuminate\Support\Facades\Route;
-Route::get('/login', function () {
-    return view('admin.login');
-})->middleware('already_admin_login');
-
-use App\Http\Controllers\Default\AdminLoginController;
-Route::post('/login', [AdminLoginController::class, 'login']);
-
-use App\Http\Controllers\Default\LogoutController;
-Route::get('/logout', [LogoutController::class, 'logout'])->middleware('admin_login');
-
-Route::get('/', function () {
-    return view('index');
-})->middleware('admin_login');
-
-use App\Http\Controllers\Default\UpdateController;
-Route::post('{any}/update', [UpdateController::class, 'save'])->middleware('admin_login');
-
-EOF;
-
-        $filename = './routes/web.php';
-        // ファイルを開く（'a'は追記モード）
-        $fp = fopen($filename, "w");
-        // ファイルに書き込む
-        fputs($fp, $route_value);
-        // ファイルを閉じる
-        fclose($fp);
-        echo "【web.php】";
-        echo $filename."\n";
-
-
-
+        
 
 
 
@@ -281,45 +144,10 @@ EOF;
             }
 
 
-            // ヘッダー追記
-            $header_value = <<< EOF
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/${tableName}">${tableName}</a>
-                    </li>
-EOF;
-
-            $filename = './resources/views/layouts/header.blade.php';
-            // ファイルを開く（'a'は追記モード）
-            $fp = fopen($filename, "a");
-            // ファイルに書き込む
-            fputs($fp, $header_value);
-            // ファイルを閉じる
-            fclose($fp);
-            echo "【ヘッダーメニュー追加】";
-            echo $filename . "\n";
+           
 
 
-            // web.php追記
-            $route_value = <<< EOF
 
-use App\Http\Controllers\Generated\\${tableNameCamel}\\${tableNameCamel}ListController;
-use App\Http\Controllers\Generated\\${tableNameCamel}\\${tableNameCamel}FormController;
-use App\Http\Controllers\Generated\\${tableNameCamel}\\${tableNameCamel}DetailController;
-Route::get('/${tableName}', [${tableNameCamel}ListController::class, 'index'])->middleware('admin_login');
-Route::get('/${tableName}/edit/{id}', [${tableNameCamel}FormController::class, 'index'])->middleware('admin_login');
-Route::get('/${tableName}/detail/{id}', [${tableNameCamel}DetailController::class, 'index'])->middleware('admin_login');
-
-EOF;
-
-            $filename = './routes/web.php';
-            // ファイルを開く（'a'は追記モード）
-            $fp = fopen($filename, "a");
-            // ファイルに書き込む
-            fputs($fp, $route_value);
-            // ファイルを閉じる
-            fclose($fp);
-            echo "【web.php追記】";
-            echo $tableName . "\n";
 
 
 
@@ -815,22 +643,7 @@ EOF;
 
 
 
-            // index追記
-            $breadcrumbs_value = <<< EOF
 
-        <li class="list-group-item"><a href="/${tableName}">${tableName}</a></li>
-
-EOF;
-
-            $filename = './resources/views/index.blade.php';
-            // ファイルを開く（'a'は追記モード）
-            $fp = fopen($filename, "a");
-            // ファイルに書き込む
-            fputs($fp, $breadcrumbs_value);
-            // ファイルを閉じる
-            fclose($fp);
-            echo "【idnex追記】";
-            echo $filename."\n";
 
 
 
@@ -889,37 +702,6 @@ EOF;
 
 
 
-            // ヘッダー完成
-            $header_value = <<< EOF
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/logout">ログアウト</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Dropdown link
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-</header>
-EOF;
-
-            $filename = './resources/views/layouts/header.blade.php';
-            // ファイルを開く（'a'は追記モード）
-            $fp = fopen($filename, "a");
-            // ファイルに書き込む
-            fputs($fp, $header_value);
-            // ファイルを閉じる
-            fclose($fp);
-            echo "【ヘッダー完成】";
-            echo $filename . "\n";
 
 
 
@@ -928,27 +710,6 @@ EOF;
 
 
 
-        // index完成
-        $breadcrumbs_value = <<< EOF
-
-   </ul>
-</main>
-
-</body>
-<script src="{{ asset('js/bootstrap.js') }}"></script>
-</html>
-
-EOF;
-
-        $filename = './resources/views/index.blade.php';
-        // ファイルを開く（'a'は追記モード）
-        $fp = fopen($filename, "a");
-        // ファイルに書き込む
-        fputs($fp, $breadcrumbs_value);
-        // ファイルを閉じる
-        fclose($fp);
-        echo "【idnex作成】";
-        echo $filename."\n";
 
 
 
