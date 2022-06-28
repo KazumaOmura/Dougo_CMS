@@ -20,6 +20,7 @@ class MakeORM extends Command
     {
         $new_blade_flag=false;
         $new_controller_flag=false;
+        $new_breadcrumb_flag=false;
 
         if ($this->input->hasParameterOption('--how')) {
             $this->line('');
@@ -30,6 +31,7 @@ class MakeORM extends Command
             $this->line('   --name [<AppName>]              アプリ名を指定します');
             $this->line('   --controller                    controllerを再生成します');
             $this->line('   --blade                         bladeを再生成します');
+            $this->line('   --breadcrumb                    パンクずを再生成します');
             $this->line('');
             exit;
         }
@@ -49,6 +51,10 @@ class MakeORM extends Command
 
         if ($this->input->hasParameterOption('--controller')) {
             $new_controller_flag=true;
+        }
+
+        if ($this->input->hasParameterOption('--breadcrumb')) {
+            $new_breadcrumb_flag=true;
         }
             
         $app_name = $this->option('name');
@@ -81,16 +87,16 @@ Breadcrumbs::for('home', function (\$trail) {
 EOF;
 
         $filename = './routes/breadcrumbs.php';
-        // ファイルを開く（'a'は追記モード）
-        $fp = fopen($filename, "w");
-        // ファイルに書き込む
-        fputs($fp, $breadcrumbs_value);
-        // ファイルを閉じる
-        fclose($fp);
-        echo "【パンクズ作成】";
-        echo $filename."\n";
 
 
+        // ファイルがない場合&&再生成する場合
+        if (!file_exists($filename) && $new_breadcrumb_flag) {
+            $fhandle = fopen($filename, "w"); //ファイルを書き込みモードで開く。
+            fwrite($fhandle, $breadcrumbs_value); //ファイルをバイナリモードで書き込む。第二引数に書き込みたい文字列
+            fclose($fhandle); //ファイルポインタを閉じる
+            echo "【パンクズ作成】";
+            echo $filename."\n";
+        }
 
 
 
@@ -674,14 +680,17 @@ Breadcrumbs::for('${tableName}.detail', function (\$trail) {
 
 EOF;
 
-            $filename = './routes/breadcrumbs.php';
-            // ファイルを開く（'a'は追記モード）
-            $fp = fopen($filename, 'a');
-            // ファイルに書き込む
-            fputs($fp, $breadcrumbs_value);
-            // ファイルを閉じる
-            fclose($fp);
-            echo "【パンクズ[" . $tableName . "]追記】" . "\n";
+            // 再生成する場合
+            if ($new_breadcrumb_flag) {
+                $filename = './routes/breadcrumbs.php';
+                // ファイルを開く（'a'は追記モード）
+                $fp = fopen($filename, 'a');
+                // ファイルに書き込む
+                fputs($fp, $breadcrumbs_value);
+                // ファイルを閉じる
+                fclose($fp);
+                echo "【パンクズ[" . $tableName . "]追記】" . "\n";
+            }
 
 
 
