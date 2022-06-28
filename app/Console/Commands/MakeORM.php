@@ -176,6 +176,15 @@ EOF;
     <div class="alert alert-{{session('type')}}">{{session('message')}}</div>
 @endif
 <main class="container-xxl">
+    <div class="d-flex flex-row">
+        <div>
+            <h3>サンプル</h3>
+            <ul class="list-group list-group-flush" style="max-width: 400px;">
+                <li class="list-group-item"><a href="#">サンプル</a></li>
+            </ul>
+        </div>
+    </div>
+    
     <h3>Menu</h3>
     <ul class="list-group list-group-flush" style="max-width: 400px;">
 
